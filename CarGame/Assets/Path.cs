@@ -36,9 +36,10 @@ public class Path {
     /// <param name="pathD"> Distance travelled along the road segment.</param>
     /// <param name="horiD"> Horizontal deviation from the midway path.</param>
     /// <returns></returns>
-    public virtual Vector2 GetPosition(double pathD, double horiD)
+    public virtual Vector2 GetPosition(float pathD, float horiD)
     {
-        return new Vector2(0,0);
+        float lambda = length / pathD; //Percentage of path traveled
+        return Vector2.Lerp(midways[0], midways[1], lambda);
     }
 
 }
