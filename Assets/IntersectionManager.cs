@@ -8,17 +8,12 @@ public class IntersectionManager : MonoBehaviour {
     public List<Path> pathList;
     public GameObject roadObject;           //Road prefab for instantiating in GenerateRoads method
 
-	void Start ()
-    {
-        GetIntersectionsOnGame();
-        GenerateRoads();
-	}
 
     /// <summary>
     /// Finds all intersections in the game and adds them to the list of the IntersectionManager. Note
     /// that all intersections must be children of the gameObject containing the intersection manager.
     /// </summary>
-    private void GetIntersectionsOnGame()
+    public void GetIntersectionsOnGame()
     {
         Intersection[] intArray = GetComponentsInChildren<Intersection>();
         foreach (Intersection inter in intArray)
@@ -30,7 +25,7 @@ public class IntersectionManager : MonoBehaviour {
     /// <summary>
     /// Generates a Road with a Path for each declared connection between intersections.
     /// </summary>
-    private void GenerateRoads()
+    public void GenerateRoads()
     {
         pathList = new List<Path>();
 
@@ -61,6 +56,10 @@ public class IntersectionManager : MonoBehaviour {
                 Path path = new Path();
                 path.Create(startCorners, endCorners);
                 road.GetComponent<Road>().path = path;
+
+                //Add the road object to the exit and the next segment to the road
+                startInter.exitArray[i].road = road.GetComponent<Road>();
+                road.GetComponent<Road>().nextRoadSegment = endInter;
             }
         }
     }
