@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameTester : MonoBehaviour {
+public class GameManager : MonoBehaviour {
 
     public IntersectionManager intersectionManager;
     public RoadSegment initialRoadSegment;
