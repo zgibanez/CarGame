@@ -7,7 +7,7 @@ public class Road : RoadSegment {
     //!!PROVISIONAL ONLY FOR VISUALIZATION!!
     private void Update()
     {
-        path.UpdateKeypoints();
+        path.Recalculate();
     }
 
     private void OnDrawGizmos()

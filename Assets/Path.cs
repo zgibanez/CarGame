@@ -8,7 +8,9 @@ public class Path {
     public GameObject[] endCorners; 
     public Vector2[] midways;
 
-    Vector3[] keypoints;
+    float startWidth, endWidth;
+
+    Bezier curve;
 
     public float length;
 
@@ -22,50 +24,38 @@ public class Path {
         this.startCorners = startCorners;
         this.endCorners = endCorners;
 
-        keypoints = new Vector3[4]; // initialize once
-        UpdateKeypoints();
+        Recalculate();
     }
 
     /// <summary>
     /// function that can be used to recalculate the number and configurations of the keypoints of the path center
     /// </summary>
-    public void UpdateKeypoints()
+    public void Recalculate()
     {
-        keypoints = new Vector3[4];
+        Vector3[] controlPoints = new Vector3[4];
 
         // set center points as end points
-        keypoints[0] = Vector3.Lerp(startCorners[0].transform.position, startCorners[1].transform.position, 0.5f);
-        keypoints[3] = Vector3.Lerp(endCorners[0].transform.position, endCorners[1].transform.position, 0.5f);
+        controlPoints[0] = Vector3.Lerp(startCorners[0].transform.position, startCorners[1].transform.position, 0.5f);
+        controlPoints[3] = Vector3.Lerp(endCorners[0].transform.position, endCorners[1].transform.position, 0.5f);
 
         // determine 1/2 of length between end points (arbitrary factor. lower factor results in less sharp curve)
-        float keypointDistance = Vector3.Distance(keypoints[0], keypoints[3]) / 2f;
+        float keypointDistance = Vector3.Distance(controlPoints[0], controlPoints[3]) / 2f;
 
         // add intermediate points normal to start and end points at distance calculated above
-        Vector3 startForwards = (startCorners[1].transform.position - keypoints[0]);
+        Vector3 startForwards = (startCorners[1].transform.position - controlPoints[0]);
         startForwards = Quaternion.AngleAxis(-90, Vector3.back) * startForwards;
-        startForwards = keypoints[0] + startForwards.normalized * keypointDistance;
-        keypoints[1] = startForwards;
+        startForwards = controlPoints[0] + startForwards.normalized * keypointDistance;
+        controlPoints[1] = startForwards;
 
-        Vector3 endBackwards = (endCorners[0].transform.position - keypoints[3]);
+        Vector3 endBackwards = (endCorners[0].transform.position - controlPoints[3]);
         endBackwards = Quaternion.AngleAxis(90, Vector3.back) * endBackwards;
-        endBackwards = keypoints[3] + endBackwards.normalized * keypointDistance;
-        keypoints[2] = endBackwards;
+        endBackwards = controlPoints[3] + endBackwards.normalized * keypointDistance;
+        controlPoints[2] = endBackwards;
 
-        CalculateLength();
-    }
+        curve = new Bezier(controlPoints);
 
-    void CalculateLength()
-    {
-        length = 0;
-        Vector3 pointA = keypoints[0];
-        Vector3 pointB;
-        int resolution = 10;
-        for (float i = 1; i < resolution; i++)
-        {
-            pointB = BezierPoint(keypoints, i / resolution);
-            length += Vector3.Distance(pointA, pointB);
-            pointA = pointB;
-        }
+        startWidth = Vector3.Distance(startCorners[0].transform.position, startCorners[1].transform.position);
+        endWidth = Vector3.Distance(endCorners[0].transform.position, endCorners[1].transform.position);
     }
 
     /// <summary>
@@ -76,37 +66,29 @@ public class Path {
     /// <returns></returns>
     public virtual Vector3 GetPosition(float pathD, float horiD)
     {
-        return BezierPoint(keypoints, pathD / length);
-    }
-
-    Vector3 BezierPoint(Vector3[] points, float t)
-    {
-        if (points.Length == 2) return Vector3.Lerp(points[0], points[1], t);
-        Vector3[] subPoints = new Vector3[points.Length - 1];
-        for (int i = 0; i < subPoints.Length; i++)
-        {
-            subPoints[i] = BezierPoint(new Vector3[] { points[i], points[i + 1] }, t);
-        }
-        return BezierPoint(subPoints, t);
+        return curve.GetPoint(pathD);
     }
 
     public void DrawGizmo()
     {
-        Gizmos.color = Color.red;
-
-        // draw keypoints
-        for (int i = 0; i < keypoints.Length; i++)
-            Gizmos.DrawSphere(keypoints[i], 0.05f);
-
         // draw curve
-        Vector3 pointA = keypoints[0];
-        Vector3 pointB;
         int resolution = 20;
-        for (float i = 1; i <= resolution; i++)
+        for (float i = 0; i < resolution; i++)
         {
-            pointB = BezierPoint(keypoints, i / resolution);
-            Gizmos.DrawLine(pointA, pointB);
-            pointA = pointB;
+            float t1 = i / resolution;
+            float t2 = (i + 1) / resolution;
+
+            Gizmos.color = Color.red;
+            Vector3 point1 = curve.GetPoint(t1);
+            Vector3 point2 = curve.GetPoint(t2);
+            Gizmos.DrawLine(point1, point2);
+
+            // draw edges
+            Gizmos.color = Color.white;
+            float length1 = Mathf.Lerp(startWidth, endWidth, t1)/2;
+            float length2 = Mathf.Lerp(startWidth, endWidth, t2) / 2;
+            Gizmos.DrawLine(point1 + curve.GetNormal(t1) * length1, point2 + curve.GetNormal(t2) * length2);
+            Gizmos.DrawLine(point1 + curve.GetNormal(t1) * -length1, point2 + curve.GetNormal(t2) * -length2);
         }
     }
 }
