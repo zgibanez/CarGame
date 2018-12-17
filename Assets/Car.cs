@@ -12,7 +12,9 @@ public class Car : MonoBehaviour {
     public float speed = 1f;
     public float pDist = 0f;   //Path distance traversed
     public RoadSegment currentRoadSegment;
+    public RoadSegment previousRoadSegment;
     public Intersection.Direction nextIntersectionDirection;
+    private Path path;
 
     public enum DirecLight { NONE, LEFT, RIGHT };
     [Header("Directional Lights")]
@@ -54,6 +56,7 @@ public class Car : MonoBehaviour {
 
         //If we have traversed more distance than the current path, it means we are in a new RoadSegment
         Debug.Log("PathCompleted");
+        previousRoadSegment = currentRoadSegment;
         currentRoadSegment = currentRoadSegment.GetNextSegment(this);
         pDist = 0; //reset path distance
     }

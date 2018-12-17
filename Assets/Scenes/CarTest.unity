@@ -305,7 +305,7 @@ Prefab:
     - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
         type: 2}
       propertyPath: exitArray.Array.data[1].nextIntersectionID
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
         type: 2}
@@ -827,6 +827,12 @@ Prefab:
       propertyPath: guistyle.m_FontSize
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 212342216856225530, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 285a4db0abdbccc4dbef7ec13256a34b,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
   m_IsPrefabAsset: 0
@@ -1037,6 +1043,12 @@ Prefab:
       propertyPath: m_LocalScale.x
       value: 2.365
       objectReference: {fileID: 0}
+    - target: {fileID: 212342216856225530, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 285a4db0abdbccc4dbef7ec13256a34b,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
   m_IsPrefabAsset: 0
@@ -1094,6 +1106,12 @@ Prefab:
       propertyPath: exitArray.Array.data[0].direction
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 212342216856225530, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 285a4db0abdbccc4dbef7ec13256a34b,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
   m_IsPrefabAsset: 0

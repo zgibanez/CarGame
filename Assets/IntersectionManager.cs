@@ -5,7 +5,6 @@ using UnityEngine;
 public class IntersectionManager : MonoBehaviour {
 
     public List<Intersection> intersectionList; //List of currently active intersections
-    public List<Path> pathList;
     public GameObject roadObject;           //Road prefab for instantiating in GenerateRoads method
 
 
@@ -27,7 +26,6 @@ public class IntersectionManager : MonoBehaviour {
     /// </summary>
     public void GenerateRoads()
     {
-        pathList = new List<Path>();
 
         //For each intersection in the game
         foreach (Intersection startInter in intersectionList)
