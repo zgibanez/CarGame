@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Car : MonoBehaviour {
 
-    //Variables for initializing (under test)
-    public RoadSegment initialRoadSegment;
-
     // Variables for calculating path position
     [Header("Path")]
     public float speed = 1f;

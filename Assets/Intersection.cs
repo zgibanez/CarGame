@@ -19,6 +19,17 @@ public class Intersection : RoadSegment {
     }
     public Exit[] exitArray;  //In the order 0 = South, 1 = West, 2 = North, 3 = East
 
+    private int GetExitIndex(Exit exit)
+    {
+        for (int i = 0; i < exitArray.Length; i++)
+        {
+            if (exit.Equals(exitArray[i]))
+                return i;
+        }
+        Debug.LogWarning("GetExitIndex could not find exit in exitArray");
+        return -1;
+    }
+
     /// <summary>
     /// Returns the corner objects of a direction in an intersecion.
     /// </summary>
@@ -26,7 +37,19 @@ public class Intersection : RoadSegment {
     /// <returns></returns>
     public GameObject[] GetExitCorners(Direction dir)
     {
+        return Direction2Corner(dir);
+    }
+
+    public GameObject[] GetExitCorners(Exit exit)
+    {
+        int idx = GetExitIndex(exit);
+        return Direction2Corner((Direction)idx);
+    }
+
+    private GameObject[] Direction2Corner(Direction dir)
+    {
         GameObject[] corners = new GameObject[2];
+
         switch (dir)
         {
             case Direction.SOUTH:
@@ -91,7 +114,38 @@ public class Intersection : RoadSegment {
         path.Create(GetExitCorners(startDirection), GetExitCorners(endDirection));
     }
 
+
     public override Connection GetConnection(Car car)
+    {
+        Exit startExit = new Exit();
+        Exit endExit;
+        //Get exit where the car comes from
+        for (int i = 0; i < exitArray.Length; i++)
+        {
+            if (car.previousRoadSegment == exitArray[i].road)
+            {
+                startExit = exitArray[i];
+            }
+        }
+        //Get exit where is it going according to lights
+        endExit = GetCarExit((Direction)GetExitIndex(startExit), car.direcLight);
+        //Check if this connection exists
+        Connection c = QueryConnectionFromRoadSegments(startExit.road, endExit.road);
+        //If it does not exist create a new connection
+        if (c == null)
+        {
+            //Get corners of both exits and construct borders
+            Border startBorder = new Border(GetExitCorners(startExit), startExit.road);
+            Border endBorder = new Border(GetExitCorners(endExit), endExit.road);
+            //Construct a connection
+            c = new Connection(startBorder, endBorder);
+            connectionList.Add(c);
+        }
+
+        return c;
+    }
+
+    public Connection GetConnection2(Car car)
     {
         RoadSegment entryRoad = car.previousRoadSegment; //RoadSegment where the car comes from
         Car.DirecLight dl = car.direcLight;
@@ -113,9 +167,12 @@ public class Intersection : RoadSegment {
             return null;
         }
 
+        
         //Get the road where the car will exit
         RoadSegment exitRoad;
         Exit tempExit = GetCarExit(dir, dl);
+        int exitIndex = GetExitIndex(tempExit);
+        Debug.Log("Car comes from " + dir + " and wants to go " + (Direction)exitIndex);
         exitRoad = tempExit.road;
         if (exitRoad == null)
         {
@@ -133,9 +190,12 @@ public class Intersection : RoadSegment {
         }
 
         Debug.Log("GetConnection(Intersection): Cannot find a connection in connectionList that matches entry and exit road.Connection will be created");
-        Border _entryBorder = new Border(GetExitCorners(dir),entryRoad);
-        Border _exitBorder = new Border(GetExitCorners(tempExit.direction),exitRoad);
+        Border _entryBorder = new Border(GetExitCorners(dir),this);
+        Border _exitBorder = new Border(GetExitCorners((Direction) exitIndex),exitRoad);
+        //Connection _connection = new Connection(_entryBorder, _exitBorder);
         Connection _connection = new Connection(_entryBorder, _exitBorder);
+        connectionList.Add(_connection);
+
         return _connection;
     }
 

@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
     {
        intersectionManager.GenerateRoads();
        GameObject car = Instantiate(carObject);
-       //car.GetComponent<Car>().currentRoadSegment = startSegment;
-       //car.GetComponent<Car>().currentConnection = startSegment.GetConnection(car.GetComponent<Car>());
+       car.GetComponent<Car>().currentRoadSegment = startSegment;
+       car.GetComponent<Car>().currentConnection = startSegment.GetConnection(car.GetComponent<Car>());
     }
 }

@@ -7,12 +7,24 @@ public abstract class RoadSegment : MonoBehaviour {
     public RoadSegment nextRoadSegment;
     public List<Connection> connectionList = new List<Connection>();
 
+    public Connection QueryConnectionFromRoadSegments(RoadSegment entry, RoadSegment exit)
+    {
+        foreach (Connection connection in connectionList)
+        {
+            if (connection.entryBorder.rs == entry && connection.exitBorder.rs == exit)
+            {
+                return connection;
+            }
+        }
+
+        return null;
+    }
+
     public virtual RoadSegment GetNextSegment(Car car)
     {
         nextRoadSegment.UpdatePath(car);  //Path is updated before assigning
         return nextRoadSegment;
     }
-
      /// <summary>
      /// Generic method for updating the Path of the RoadSegment according to the car state.
      /// </summary>

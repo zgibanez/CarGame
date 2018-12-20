@@ -13,4 +13,8 @@ public class Border {
         this.rs = rs;
     }
 
+    public Border()
+    {
+    }
+
 }

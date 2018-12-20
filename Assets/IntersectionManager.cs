@@ -35,7 +35,7 @@ public class IntersectionManager : MonoBehaviour {
 
     void BuildIntersectionRoads(Intersection startInter)
     {
-        //We just need the 4 connected corner objects
+        //We need the 4 connected corner objects
         GameObject[] startCorners = new GameObject[2];
         GameObject[] endCorners = new GameObject[2];
 
@@ -58,17 +58,24 @@ public class IntersectionManager : MonoBehaviour {
             Border borderA = new Border(startCorners,startInter);
             Border borderB = new Border(endCorners, endInter);
 
-            //Create a Road and add to it a path connecting corners and midways
+            //Create a Road and built its two connections 
             GameObject road = Instantiate(roadObject, transform);
             road.GetComponent<RoadSegment>().connectionList = new List<Connection>();
             road.GetComponent<RoadSegment>().connectionList.Add(new Connection(borderA, borderB));
             road.GetComponent<RoadSegment>().connectionList.Add(new Connection(borderB, borderA));
 
+            //Add the road to the exit list of the end intersection
+            Intersection.Exit endExit;
+            endExit.road = road.GetComponent<Road>();
+            endExit.nextIntersectionID = startInter.id;
+            endExit.direction = (Intersection.Direction) i;
+            endInter.exitArray[(int)startInter.exitArray[i].direction] = endExit;
+
+            ///SUBJECT TO BE ELIMINATED
             //Add the road object to the exit and the next segment to the road
             startInter.exitArray[i].road = road.GetComponent<Road>();
             road.GetComponent<Road>().nextRoadSegment = endInter;
 
-            ///SUBJECT TO BE ELIMINATED
             Path path = new Path();
             path.Create(startCorners, endCorners);
             road.GetComponent<Road>().path = path;
