@@ -12,6 +12,8 @@ public class Car : MonoBehaviour {
     public float speed = 1f;
     public float pDist = 0f;   //Path distance traversed
     public RoadSegment currentRoadSegment;
+    public RoadSegment previousRoadSegment;
+    public Connection currentConnection;
     public Intersection.Direction nextIntersectionDirection;
 
     public enum DirecLight { NONE, LEFT, RIGHT };
@@ -31,6 +33,7 @@ public class Car : MonoBehaviour {
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        currentRoadSegment.GetConnection(this);
         currentRoadSegment.UpdatePath(this);
     }
 
@@ -46,20 +49,22 @@ public class Car : MonoBehaviour {
     void UpdatePosition()
     {
         pDist += Time.deltaTime * speed; //Update the path distance traversed
-        if (pDist < currentRoadSegment.path.length)
+        if (pDist < currentConnection.path.length)
         {
-            transform.position = currentRoadSegment.path.GetPosition(pDist, 0); //Ask the current road segment for position 
+            transform.position = currentConnection.path.GetPosition(pDist, 0); //Ask the current road segment for position 
             return;
         }
 
         //If we have traversed more distance than the current path, it means we are in a new RoadSegment
-        Debug.Log("PathCompleted");
-        currentRoadSegment = currentRoadSegment.GetNextSegment(this);
+        Debug.Log("Path Completed");
+        previousRoadSegment = currentRoadSegment;
+        currentRoadSegment = currentConnection.exitBorder.rs;
+        currentConnection = currentRoadSegment.GetConnection(this);
         pDist = 0; //reset path distance
     }
 
     /// <summary>
-    /// Registers user input to change the directional light state.
+    /// Registers user input to change the DirecLight state.
     /// </summary>
     void GetLightDirection()
     {

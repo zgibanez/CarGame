@@ -8,7 +8,7 @@ public class Intersection : RoadSegment {
 
     public int id;
     public GameObject SE, SW, NW, NE;                 //Placeholders for corners
-    public enum Direction { SOUTH, WEST, NORTH, EAST};
+    public enum Direction { SOUTH, WEST, NORTH, EAST, NONE};
 
     [System.Serializable]
     public struct Exit
@@ -89,6 +89,75 @@ public class Intersection : RoadSegment {
 
         path = new Path();
         path.Create(GetExitCorners(startDirection), GetExitCorners(endDirection));
+    }
+
+    public override Connection GetConnection(Car car)
+    {
+        RoadSegment entryRoad = car.previousRoadSegment; //RoadSegment where the car comes from
+        Car.DirecLight dl = car.direcLight;
+        Direction dir = Direction.NONE;
+
+        //Figure from which direction is the car coming
+        foreach (Exit exit in exitArray)
+        {
+            if (entryRoad == exit.road)
+            {
+                dir = exit.direction;
+                break;
+            }
+        }
+
+        if (dir == Direction.NONE)
+        {
+            Debug.LogError("GetConnection (Intersection): Car comes from an unknown direction.");
+            return null;
+        }
+
+        //Get the road where the car will exit
+        RoadSegment exitRoad;
+        Exit tempExit = GetCarExit(dir, dl);
+        exitRoad = tempExit.road;
+        if (exitRoad == null)
+        {
+            Debug.LogWarning("GetConnection(Intersection): Car is attempting to go to an unexistent exit.");
+            throw new NullReferenceException("exitRoad is null.");
+        }
+
+        //Check all connections in the intersection and find the one with the same entry and exit point
+        foreach (Connection connection in connectionList)
+        {
+            if (connection.entryBorder.rs == entryRoad && connection.exitBorder.rs == exitRoad)
+            {
+                return connection;
+            }
+        }
+
+        Debug.Log("GetConnection(Intersection): Cannot find a connection in connectionList that matches entry and exit road.Connection will be created");
+        Border _entryBorder = new Border(GetExitCorners(dir),entryRoad);
+        Border _exitBorder = new Border(GetExitCorners(tempExit.direction),exitRoad);
+        Connection _connection = new Connection(_entryBorder, _exitBorder);
+        return _connection;
+    }
+
+    private Exit GetCarExit(Direction startDirection, Car.DirecLight direcLight)
+    {
+        int exitNumber = (int)startDirection;
+        //Exits are treated as a circular array. The blinking light state adds to the 
+        //array index and the actual exit is obtained with the remainder.
+        switch (direcLight)
+        {
+            case Car.DirecLight.NONE:
+                exitNumber += 2;
+                break;
+            case Car.DirecLight.LEFT:
+                exitNumber += 1;
+                break;
+            case Car.DirecLight.RIGHT:
+                exitNumber += 3;
+                break;
+        }
+        exitNumber %= exitArray.Length;
+        return exitArray[exitNumber];
     }
 
     private void OnDrawGizmos()

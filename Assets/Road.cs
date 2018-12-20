@@ -14,4 +14,20 @@ public class Road : RoadSegment {
     {
         path.DrawGizmo();
     }
+
+    public override Connection GetConnection(Car car)
+    {
+        RoadSegment rs = car.previousRoadSegment;
+
+        foreach (Connection connection in connectionList)
+        {
+            if (connection.entryBorder.rs == rs)
+            {
+                return connection;
+            }
+        }
+
+        Debug.LogError("GetConnection cannot find Connection for Car object.");
+        return null;
+    }
 }
