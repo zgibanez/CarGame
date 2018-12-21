@@ -8,7 +8,7 @@ public class Intersection : RoadSegment {
 
     public int id;
     public GameObject SE, SW, NW, NE;                 //Placeholders for corners
-    public enum Direction { SOUTH, WEST, NORTH, EAST};
+    public enum Direction { SOUTH, WEST, NORTH, EAST, NONE};
 
     [System.Serializable]
     public struct Exit
@@ -19,6 +19,17 @@ public class Intersection : RoadSegment {
     }
     public Exit[] exitArray;  //In the order 0 = South, 1 = West, 2 = North, 3 = East
 
+    private int GetExitIndex(Exit exit)
+    {
+        for (int i = 0; i < exitArray.Length; i++)
+        {
+            if (exit.Equals(exitArray[i]))
+                return i;
+        }
+        Debug.LogWarning("GetExitIndex could not find exit in exitArray");
+        return -1;
+    }
+
     /// <summary>
     /// Returns the corner objects of a direction in an intersecion.
     /// </summary>
@@ -26,7 +37,19 @@ public class Intersection : RoadSegment {
     /// <returns></returns>
     public GameObject[] GetExitCorners(Direction dir)
     {
+        return Direction2Corner(dir);
+    }
+
+    public GameObject[] GetExitCorners(Exit exit)
+    {
+        int idx = GetExitIndex(exit);
+        return Direction2Corner((Direction)idx);
+    }
+
+    private GameObject[] Direction2Corner(Direction dir)
+    {
         GameObject[] corners = new GameObject[2];
+
         switch (dir)
         {
             case Direction.SOUTH:
@@ -49,24 +72,45 @@ public class Intersection : RoadSegment {
         return corners;
     }
 
-    public override void UpdatePath(Car car)
+
+    public override Connection GetConnection(Car car)
     {
-        Direction nextDirection;
-        GenerateLocalPath(car.nextIntersectionDirection, car.direcLight, out nextDirection);
-        car.nextIntersectionDirection = nextDirection;
+        Exit startExit = new Exit();
+        Exit endExit;
+        //Get exit where the car comes from
+        for (int i = 0; i < exitArray.Length; i++)
+        {
+            if (car.previousRoadSegment == exitArray[i].road)
+            {
+                startExit = exitArray[i];
+            }
+        }
+        //Get exit where is it going according to lights
+        endExit = GetCarExit((Direction)GetExitIndex(startExit), car.direcLight);
+        //Check if this connection exists
+        Connection c = QueryConnectionFromRoadSegments(startExit.road, endExit.road);
+        //If it does not exist create a new connection
+        if (c == null)
+        {
+            //Get corners of both exits and construct borders
+            Border startBorder = new Border(GetExitCorners(startExit), startExit.road);
+            Border endBorder = new Border(GetExitCorners(endExit), endExit.road);
+            //Construct a connection
+            c = new Connection(startBorder, endBorder);
+            connectionList.Add(c);
+        }
+
+        return c;
     }
 
     /// <summary>
-    /// Generates a path inside the intersection that connects to sides accoding to the entry point and the Car blinking lights.
+    /// Returns the exit where the car is heading according to the car starting direction and directional lights.
     /// </summary>
     /// <param name="startDirection"></param>
-    /// <param name="direcLight">State of the directional light of the car</param>
-    public void GenerateLocalPath(Direction startDirection, Car.DirecLight direcLight, out Direction nextDirection)
+    /// <param name="direcLight"></param>
+    /// <returns></returns>
+    private Exit GetCarExit(Direction startDirection, Car.DirecLight direcLight)
     {
-
-        // Find the starting side
-        //Direction startDirection = Array.Find(exitArray, e => e.road == road).direction;
-
         int exitNumber = (int)startDirection;
         //Exits are treated as a circular array. The blinking light state adds to the 
         //array index and the actual exit is obtained with the remainder.
@@ -83,12 +127,7 @@ public class Intersection : RoadSegment {
                 break;
         }
         exitNumber %= exitArray.Length;
-        Direction endDirection = (Direction) exitNumber;
-        nextRoadSegment = exitArray[(int)endDirection].road;
-        nextDirection = exitArray[(int)endDirection].direction;
-
-        path = new Path();
-        path.Create(GetExitCorners(startDirection), GetExitCorners(endDirection));
+        return exitArray[exitNumber];
     }
 
     private void OnDrawGizmos()

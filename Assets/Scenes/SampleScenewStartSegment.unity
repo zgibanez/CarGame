@@ -293,6 +293,8 @@ MonoBehaviour:
   - nextIntersectionID: -1
     direction: 0
     road: {fileID: 0}
+  startingEntry: 0
+  startingExit: 2
 --- !u!4 &806795006 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
@@ -342,6 +344,7 @@ Transform:
   - {fileID: 1668430359}
   - {fileID: 705771467}
   - {fileID: 806795006}
+  - {fileID: 911947524}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -447,6 +450,11 @@ Prefab:
     - {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
   m_IsPrefabAsset: 0
+--- !u!4 &911947524 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+    type: 2}
+  m_PrefabInternal: {fileID: 1557852786}
 --- !u!1001 &1235891784
 Prefab:
   m_ObjectHideFlags: 0
@@ -775,6 +783,102 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1771795207050288, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
     type: 2}
   m_PrefabInternal: {fileID: 894691397}
+--- !u!1001 &1557852786
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 855394875}
+    m_Modifications:
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -2.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[0].nextIntersectionID
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[1].nextIntersectionID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[1].nextIntersectionSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[2].nextIntersectionID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[2].nextIntersectionSide
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[3].nextIntersectionID
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[3].nextIntersectionSide
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1386821431814648, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+      propertyPath: m_Name
+      value: Intersection (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: id
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114569877246050080, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,
+        type: 2}
+      propertyPath: exitArray.Array.data[2].direction
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!4 &1668430359 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4643179996305504, guid: 4a9d94e1a99ec1c4f86751bf32bd6f18,

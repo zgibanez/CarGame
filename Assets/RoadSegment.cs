@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoadSegment : MonoBehaviour {
+public abstract class RoadSegment : MonoBehaviour {
     public Path path;
-    public RoadSegment nextRoadSegment;
+    public List<Connection> connectionList = new List<Connection>();
 
-    public virtual RoadSegment GetNextSegment(Car car)
+    //Connections are updated each frame (need to replace for passive wait)
+    private void Update()
     {
-        nextRoadSegment.UpdatePath(car);  //Path is updated before assigning
-        return nextRoadSegment;
+        foreach (Connection c in connectionList)
+        {
+            c.path.UpdateKeypoints();
+        }
     }
-     /// <summary>
-     /// Generic method for updating the Path of the RoadSegment according to the car state.
-     /// </summary>
-     /// <param name="startDirection"></param>
-     /// <param name="direcLight"></param>
-    public virtual void UpdatePath(Car car)
-    {
 
+    public Connection QueryConnectionFromRoadSegments(RoadSegment entry, RoadSegment exit)
+    {
+        foreach (Connection connection in connectionList)
+        {
+            if (connection.entryBorder.rs == entry && connection.exitBorder.rs == exit)
+            {
+                return connection;
+            }
+        }
+
+        return null;
     }
+
+    public abstract Connection GetConnection(Car car);
 }
