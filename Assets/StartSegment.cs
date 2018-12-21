@@ -18,8 +18,8 @@ public class StartSegment : Intersection {
     /// <returns></returns>
     public override Connection GetConnection(Car car)
     {
-        Border entryBorder = new Border(GetExitCorners(exitArray[startingEntry].direction), this);
-        Border exitBorder = new Border(GetExitCorners(exitArray[startingExit].direction), exitArray[startingExit].road);
+        Border entryBorder = new Border(GetExitCorners((Direction) startingEntry), this);
+        Border exitBorder = new Border(GetExitCorners((Direction) startingExit), exitArray[startingExit].road);
         Connection c = new Connection(entryBorder,exitBorder);
         connectionList.Add(c);
         return c;

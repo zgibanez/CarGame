@@ -11,7 +11,7 @@ public abstract class RoadSegment : MonoBehaviour {
     {
         foreach (Connection c in connectionList)
         {
-            c.path.UpdateKeypoints();
+            c.path.Recalculate();
         }
     }
 

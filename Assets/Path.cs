@@ -56,7 +56,8 @@ public class Path {
 
         startWidth = Vector3.Distance(startCorners[0].transform.position, startCorners[1].transform.position);
         endWidth = Vector3.Distance(endCorners[0].transform.position, endCorners[1].transform.position);
-    }
+        length = curve.length;
+        }
 
     /// <summary>
     /// Generic function that returns the 2D position of a vehicle on the path.

@@ -4,7 +4,7 @@ public class Bezier {
 
     Vector3[] controlPoints;
     Vector3[] hodograph;        // Used for derivative https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/Bezier/bezier-der.html
-    float length;
+    public float length;
 
     public Bezier(Vector3[] points)
     {

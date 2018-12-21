@@ -4,14 +4,29 @@ using UnityEngine;
 
 public class Road : RoadSegment {
 
-    //!!PROVISIONAL ONLY FOR VISUALIZATION!!
-    private void Update()
-    {
-        path.Recalculate();
-    }
-
     private void OnDrawGizmos()
     {
-        path.DrawGizmo();
+        foreach (Connection c in connectionList)
+        {
+            c.path.DrawGizmo();
+        }
     }
+
+    public override Connection GetConnection(Car car)
+    {
+        RoadSegment rs = car.previousRoadSegment;
+
+        foreach (Connection connection in connectionList)
+        {
+            if (connection.entryBorder.rs == rs)
+            {
+                return connection;
+            }
+        }
+
+        Debug.LogError("GetConnection cannot find Connection for Car object.");
+        return null;
+    }
+
+
 }
