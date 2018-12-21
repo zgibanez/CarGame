@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Road : RoadSegment {
 
-    //!!PROVISIONAL ONLY FOR VISUALIZATION!!
-    private void Update()
-    {
-        path.UpdateKeypoints();
-    }
-
     private void OnDrawGizmos()
     {
-        path.DrawGizmo();
+        foreach (Connection c in connectionList)
+        {
+            c.path.DrawGizmo();
+        }
     }
 
     public override Connection GetConnection(Car car)

@@ -4,8 +4,16 @@ using UnityEngine;
 
 public abstract class RoadSegment : MonoBehaviour {
     public Path path;
-    public RoadSegment nextRoadSegment;
     public List<Connection> connectionList = new List<Connection>();
+
+    //Connections are updated each frame (need to replace for passive wait)
+    private void Update()
+    {
+        foreach (Connection c in connectionList)
+        {
+            c.path.UpdateKeypoints();
+        }
+    }
 
     public Connection QueryConnectionFromRoadSegments(RoadSegment entry, RoadSegment exit)
     {
@@ -18,20 +26,6 @@ public abstract class RoadSegment : MonoBehaviour {
         }
 
         return null;
-    }
-
-    public virtual RoadSegment GetNextSegment(Car car)
-    {
-        nextRoadSegment.UpdatePath(car);  //Path is updated before assigning
-        return nextRoadSegment;
-    }
-     /// <summary>
-     /// Generic method for updating the Path of the RoadSegment according to the car state.
-     /// </summary>
-     /// <param name="Car">The car object that queries</param>
-    public virtual void UpdatePath(Car car)
-    {
-
     }
 
     public abstract Connection GetConnection(Car car);

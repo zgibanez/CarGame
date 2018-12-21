@@ -31,7 +31,6 @@ public class Car : MonoBehaviour {
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         currentRoadSegment.GetConnection(this);
-        currentRoadSegment.UpdatePath(this);
     }
 
     void Update ()

@@ -26,7 +26,6 @@ public class IntersectionManager : MonoBehaviour {
     public void GenerateRoads()
     {
         GetIntersectionsOnGame();
-
         foreach (Intersection inter in intersectionList)
         {
             BuildIntersectionRoads(inter);
@@ -50,7 +49,7 @@ public class IntersectionManager : MonoBehaviour {
                 continue;
             }
 
-            //Retrieve the corner positions of both exits
+            //Retrieve the corner objects of both exits
             startCorners = startInter.GetExitCorners((Intersection.Direction)i);
             endCorners = endInter.GetExitCorners(startInter.exitArray[i].direction);
 
@@ -58,28 +57,21 @@ public class IntersectionManager : MonoBehaviour {
             Border borderA = new Border(startCorners,startInter);
             Border borderB = new Border(endCorners, endInter);
 
-            //Create a Road and built its two connections 
+            //Create a Road and build its two connections 
             GameObject road = Instantiate(roadObject, transform);
             road.GetComponent<RoadSegment>().connectionList = new List<Connection>();
             road.GetComponent<RoadSegment>().connectionList.Add(new Connection(borderA, borderB));
             road.GetComponent<RoadSegment>().connectionList.Add(new Connection(borderB, borderA));
 
-            //Add the road to the exit list of the end intersection
+            //Add the road to the exit list of the other intersection
             Intersection.Exit endExit;
             endExit.road = road.GetComponent<Road>();
             endExit.nextIntersectionID = startInter.id;
             endExit.direction = (Intersection.Direction) i;
             endInter.exitArray[(int)startInter.exitArray[i].direction] = endExit;
 
-            ///SUBJECT TO BE ELIMINATED
             //Add the road object to the exit and the next segment to the road
             startInter.exitArray[i].road = road.GetComponent<Road>();
-            road.GetComponent<Road>().nextRoadSegment = endInter;
-
-            Path path = new Path();
-            path.Create(startCorners, endCorners);
-            road.GetComponent<Road>().path = path;
-
         }
     }
 }

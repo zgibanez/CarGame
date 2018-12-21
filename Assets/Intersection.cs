@@ -72,48 +72,6 @@ public class Intersection : RoadSegment {
         return corners;
     }
 
-    public override void UpdatePath(Car car)
-    {
-        Direction nextDirection;
-        GenerateLocalPath(car.nextIntersectionDirection, car.direcLight, out nextDirection);
-        car.nextIntersectionDirection = nextDirection;
-    }
-
-    /// <summary>
-    /// Generates a path inside the intersection that connects to sides accoding to the entry point and the Car blinking lights.
-    /// </summary>
-    /// <param name="startDirection"></param>
-    /// <param name="direcLight">State of the directional light of the car</param>
-    public void GenerateLocalPath(Direction startDirection, Car.DirecLight direcLight, out Direction nextDirection)
-    {
-
-        // Find the starting side
-        //Direction startDirection = Array.Find(exitArray, e => e.road == road).direction;
-
-        int exitNumber = (int)startDirection;
-        //Exits are treated as a circular array. The blinking light state adds to the 
-        //array index and the actual exit is obtained with the remainder.
-        switch (direcLight)
-        {
-            case Car.DirecLight.NONE:
-                exitNumber += 2;
-                break;
-            case Car.DirecLight.LEFT:
-                exitNumber += 1;
-                break;
-            case Car.DirecLight.RIGHT:
-                exitNumber += 3;
-                break;
-        }
-        exitNumber %= exitArray.Length;
-        Direction endDirection = (Direction) exitNumber;
-        nextRoadSegment = exitArray[(int)endDirection].road;
-        nextDirection = exitArray[(int)endDirection].direction;
-
-        path = new Path();
-        path.Create(GetExitCorners(startDirection), GetExitCorners(endDirection));
-    }
-
 
     public override Connection GetConnection(Car car)
     {
@@ -145,60 +103,12 @@ public class Intersection : RoadSegment {
         return c;
     }
 
-    public Connection GetConnection2(Car car)
-    {
-        RoadSegment entryRoad = car.previousRoadSegment; //RoadSegment where the car comes from
-        Car.DirecLight dl = car.direcLight;
-        Direction dir = Direction.NONE;
-
-        //Figure from which direction is the car coming
-        foreach (Exit exit in exitArray)
-        {
-            if (entryRoad == exit.road)
-            {
-                dir = exit.direction;
-                break;
-            }
-        }
-
-        if (dir == Direction.NONE)
-        {
-            Debug.LogError("GetConnection (Intersection): Car comes from an unknown direction.");
-            return null;
-        }
-
-        
-        //Get the road where the car will exit
-        RoadSegment exitRoad;
-        Exit tempExit = GetCarExit(dir, dl);
-        int exitIndex = GetExitIndex(tempExit);
-        Debug.Log("Car comes from " + dir + " and wants to go " + (Direction)exitIndex);
-        exitRoad = tempExit.road;
-        if (exitRoad == null)
-        {
-            Debug.LogWarning("GetConnection(Intersection): Car is attempting to go to an unexistent exit.");
-            throw new NullReferenceException("exitRoad is null.");
-        }
-
-        //Check all connections in the intersection and find the one with the same entry and exit point
-        foreach (Connection connection in connectionList)
-        {
-            if (connection.entryBorder.rs == entryRoad && connection.exitBorder.rs == exitRoad)
-            {
-                return connection;
-            }
-        }
-
-        Debug.Log("GetConnection(Intersection): Cannot find a connection in connectionList that matches entry and exit road.Connection will be created");
-        Border _entryBorder = new Border(GetExitCorners(dir),this);
-        Border _exitBorder = new Border(GetExitCorners((Direction) exitIndex),exitRoad);
-        //Connection _connection = new Connection(_entryBorder, _exitBorder);
-        Connection _connection = new Connection(_entryBorder, _exitBorder);
-        connectionList.Add(_connection);
-
-        return _connection;
-    }
-
+    /// <summary>
+    /// Returns the exit where the car is heading according to the car starting direction and directional lights.
+    /// </summary>
+    /// <param name="startDirection"></param>
+    /// <param name="direcLight"></param>
+    /// <returns></returns>
     private Exit GetCarExit(Direction startDirection, Car.DirecLight direcLight)
     {
         int exitNumber = (int)startDirection;
