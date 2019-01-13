@@ -52,7 +52,6 @@ public class Car : MonoBehaviour {
         }
 
         //If we have traversed more distance than the current path, it means we are in a new RoadSegment
-        Debug.Log("Path Completed");
         previousRoadSegment = currentRoadSegment;
         currentRoadSegment = currentConnection.exitBorder.rs;
         currentConnection = currentRoadSegment.GetConnection(this);

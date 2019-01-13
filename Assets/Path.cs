@@ -67,7 +67,7 @@ public class Path {
     /// <returns></returns>
     public virtual Vector3 GetPosition(float pathD, float horiD)
     {
-        return curve.GetPoint(pathD);
+        return curve.GetPoint(pathD / length);
     }
 
     public void DrawGizmo()
